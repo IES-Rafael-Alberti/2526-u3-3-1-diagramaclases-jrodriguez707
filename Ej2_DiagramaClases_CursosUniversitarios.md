@@ -57,3 +57,58 @@ Este ejercicio evalúa los siguientes criterios:
 - Algunos datos pueden requerir una clase intermedia
 - Las relaciones muchos-a-muchos con atributos propios necesitan un tratamiento especial
 - Los métodos deben reflejar las acciones que cada entidad puede realizar
+## Código PlantUML
+
+```plantuml
+@startuml CursosUniversitarios
+
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor WhiteSmoke
+    BorderColor Black
+    ArrowColor Black
+}
+
+class Curso {
+    - codigo: String
+    - nombre: String
+    - descripcion: String
+    - creditosECTS: Int
+    - nivel: String
+    + contarEstudiantes(): Int
+}
+
+class Profesor {
+    - idEmpleado: String
+    - nombreCompleto: String
+    - email: String
+    - departamento: String
+    + darClase(): void
+    + prepararExamen(): void
+    + evaluarEstudiante(estudiante: Estudiante, curso: Curso, nota: Float): void
+    + verCursos(): List<Curso>
+}
+
+class Estudiante {
+    - numeroExpediente: String
+    - nombreCompleto: String
+    - email: String
+    - fechaMatricula: Date
+    + asistirClase(): void
+    + estudiar(): void
+    + presentarseExamen(curso: Curso): void
+}
+
+class Matricula {
+    - fechaMatricula: Date
+    - nota: Float
+    + actualizarNota(nota: Float): void
+}
+
+Profesor "1" -- "0..*" Curso : imparte >
+
+Estudiante "1" -- "0..*" Matricula : registra >
+Curso "1" -- "0..*" Matricula : incluye >
+
+@enduml
+```

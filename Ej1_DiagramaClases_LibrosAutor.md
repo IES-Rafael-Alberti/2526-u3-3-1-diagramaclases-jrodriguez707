@@ -48,5 +48,38 @@ Representa un libro que puede ser leído.
 - Utiliza la visibilidad correcta: privado (-) para atributos, público (+) para métodos
 
 ## Tarea
+```plantuml
+@startuml LibrosAutor
 
-Crea el diagrama de clases UML que represente este sistema siguiendo todas las especificaciones indicadas.
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor WhiteSmoke
+    BorderColor Black
+    ArrowColor Black
+}
+
+class Autor {
+    - nombre: String
+    - apellido: String
+    - nacionalidad: String
+    - fechaNacimiento: Date
+    --
+    + escribir(): void
+    + getNombreCompleto(): String {derived}
+}
+
+class Libro {
+    - titulo: String
+    - isbn: String
+    - numeroPaginas: Int
+    - precio: Double
+    --
+    + leer(): void
+    + getTitulo(): String
+    + getPrecio(): Double
+}
+
+Autor "1" -- "1..*" Libro : escribe >
+
+@enduml
+```

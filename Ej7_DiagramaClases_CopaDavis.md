@@ -81,3 +81,82 @@ Este ejercicio evalúa los siguientes criterios:
   - Total 5 partidos: 4 individuales + 1 dobles
   - Gana el equipo que consigue 3 o más victorias
 - **Resultado eliminatoria**: Método que cuenta partidos ganados por cada equipo
+
+## Código PlantUML
+
+```plantuml
+@startuml CopaDavis
+
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor WhiteSmoke
+    BorderColor Black
+    ArrowColor Black
+}
+
+enum Superficie {
+    CESPED
+    TIERRA_BATIDA
+    PISTA_DURA
+}
+
+enum ResultadoPartido {
+    LOCAL
+    VISITANTE
+    EMPATE
+}
+
+class Equipo {
+    - nombrePais: String
+    - jugadores: List<Jugador>
+}
+
+class Jugador {
+    - nombreCompleto: String
+    - ranking: Int
+    - fechaNacimiento: Date
+    - nacionalidad: String
+}
+
+class Eliminatoria {
+    - equipoLocal: Equipo
+    - equipoVisitante: Equipo
+    - sede: Equipo
+    - superficie: Superficie
+    - partidos: List<Partido>
+    + calcularGanador(): Equipo
+}
+
+abstract class Partido {
+    - numeroPartido: Int
+    - resultado: ResultadoPartido
+}
+
+class PartidoIndividual {
+    - jugadorLocal: Jugador
+    - jugadorVisitante: Jugador
+    - setsGanadosLocal: Int
+    - setsGanadosVisitante: Int
+}
+
+class PartidoDobles {
+    - parejaLocal: Pareja
+    - parejaVisitante: Pareja
+    - setsGanadosLocal: Int
+    - setsGanadosVisitante: Int
+}
+
+class Pareja {
+    - jugador1: Jugador
+    - jugador2: Jugador
+}
+
+Partido <|-- PartidoIndividual
+Partido <|-- PartidoDobles
+
+Equipo "1..5" -- "1..*" Jugador : tiene >
+Eliminatoria "1" *-- "5" Partido : contiene >
+PartidoDobles "1" *-- "2" Pareja : tiene >
+Pareja "2" -- "1" Jugador : compuesto por >
+
+@enduml

@@ -61,3 +61,57 @@ Este ejercicio evalúa los siguientes criterios:
 - **Categorías**: Considera usar un tipo enumerado para las categorías de empleados responsables.
 - **Cardinalidades**: Presta especial atención a "todos los clientes pertenecen **al menos** a una empresa" (1..*).
 - **Método de cálculo**: El sueldo neto puede calcularse aplicando una fórmula simple: `sueldoNeto = sueldoBruto * 0.78` (restando 22% de retención).
+
+## Código PlantUML
+
+```plantuml
+@startuml SistemaEmpresarial
+
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor WhiteSmoke
+    BorderColor Black
+    ArrowColor Black
+}
+
+abstract class Persona {
+    - nombreCompleto: String
+    - fechaNacimiento: Date
+    + calcularEdad(): Int {derived}
+}
+
+class Empleado {
+    - sueldoBruto: Double
+    + calcularSueldoNeto(): Double {derived}
+}
+
+class EmpleadoResponsable {
+    - categoria: String
+    - subordinados: List<Empleado>
+    + agregarSubordinado(empleado: Empleado): void
+    + quitarSubordinado(empleado: Empleado): void
+}
+
+class Cliente {
+    - telefono: String
+    - empresas: List<Empresa>
+    + agregarEmpresa(empresa: Empresa): void
+    + quitarEmpresa(empresa: Empresa): void
+}
+
+class Empresa {
+    - nombre: String
+    - cif: String
+    - direccionFiscal: String
+    + agregarCliente(cliente: Cliente): void
+    + quitarCliente(cliente: Cliente): void
+}
+
+Persona <|-- Empleado
+Empleado <|-- EmpleadoResponsable
+Persona <|-- Cliente
+
+EmpleadoResponsable "0..*" --> "0..1" Empleado : supervisa >
+Cliente "1..*" -- "0..*" Empresa : pertenece a >
+
+@enduml

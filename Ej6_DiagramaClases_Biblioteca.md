@@ -73,3 +73,71 @@ Este ejercicio evalúa los siguientes criterios:
 - **Relación Libro-Autor**: Un libro tiene uno o más autores (considera coautoría)
 - **Cardinalidad Socio-Préstamo**: Un socio puede tener 0..3 préstamos activos simultáneamente
 
+## Código PlantUML
+
+```plantuml
+@startuml Biblioteca
+
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor WhiteSmoke
+    BorderColor Black
+    ArrowColor Black
+}
+
+enum TipoLibro {
+    NOVELA
+    POESIA
+    CUENTOS
+}
+
+enum EstadoLibro {
+    DISPONIBLE
+    PRESTADO
+    RETRASADO
+}
+
+class Autor {
+    - nombre: String
+    - fechaNacimiento: Date
+    + calcularEdad(): Int {derived}
+}
+
+class Libro {
+    - titulo: String
+    - tipo: TipoLibro
+    - estado: EstadoLibro
+    - autores: List<Autor>
+    + prestar(socio: Socio): void
+    + devolver(socio: Socio): void
+}
+
+class Socio {
+    - nombre: String
+    - dni: String
+    - fechaInscripcion: Date
+    - prestamos: List<Prestamo>
+    - multas: List<Multa>
+    + puedePrestar(): Boolean
+}
+
+class Prestamo {
+    - libro: Libro
+    - socio: Socio
+    - fechaPrestamo: Date
+    - fechaLimite: Date {derived = fechaPrestamo + 30 dias}
+}
+
+class Multa {
+    - fechaInicio: Date
+    - diasMulta: Int
+}
+
+Libro "1..*" o-- "0..*" Autor : tiene >
+Socio "0..*" -- "0..3" Prestamo : realiza >
+Prestamo "1" -- "1" Libro : de >
+Prestamo "1" -- "1" Socio : por >
+Socio "0..*" -- "0..*" Multa : recibe >
+
+@enduml
+```
