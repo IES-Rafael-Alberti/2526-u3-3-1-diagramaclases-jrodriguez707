@@ -91,3 +91,58 @@ Este ejercicio evalúa los siguientes criterios:
 **Archivo de origen**: `ejercicios/eje19 - Peliculas/Peliculas - Enunciado.png`
 **Nivel de dificultad**: Intermedio
 **Conceptos principales**: Herencia, Clase de Asociación, Relaciones N:M
+
+## Código PlantUML
+
+```plantuml
+@startuml Peliculas
+
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor WhiteSmoke
+    BorderColor Black
+    ArrowColor Black
+}
+
+abstract class Persona {
+    - nombreCompleto: String
+    - fechaNacimiento: Date
+    - nacionalidad: String
+    + calcularEdad(): int
+}
+
+class Actor {
+}
+
+class Director {
+    + getPeliculasDirigidas(): List<Pelicula>
+}
+
+class Pelicula {
+    - titulo: String
+    - anioEstreno: Int
+    - duracionMin: Int
+    - idiomaOriginal: String
+    + agregarActor(actor: Actor, papel: String)
+    + getDirector(): Director
+}
+
+class Participacion {
+    - papel: String
+    --
+    + getActor(): Actor
+    + getPelicula(): Pelicula
+}
+
+Persona <|-- Actor
+Persona <|-- Director
+
+
+Director "1" -- "0..*" Pelicula : dirige >
+Pelicula "1" -- "1..*" Participacion : tiene >
+Actor "0..*" -- "0..*" Participacion : participa en >
+Participacion "1" -- "1" Actor : relacion >
+Participacion "1" -- "1" Pelicula : relacion >
+
+@enduml
+```

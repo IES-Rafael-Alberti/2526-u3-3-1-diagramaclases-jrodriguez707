@@ -115,3 +115,88 @@ Este es un ejercicio avanzado que simula un caso real de desarrollo de software.
 - Aplicar principios SOLID
 - Pensar en la navegabilidad de las asociaciones
 - Considerar qué operaciones son responsabilidad de cada clase
+
+## Código PlantUML
+
+```plantuml
+@startuml GestionPedidos
+
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor WhiteSmoke
+    BorderColor Black
+    ArrowColor Black
+}
+
+class Cliente {
+    - nombreCompleto: String
+    - direccionEnvio: String
+    - telefono: String
+    - email: String
+    - cuentas: List<Cuenta>
+    + realizarPedido(pedido: Pedido): void
+}
+
+class Cuenta {
+    - numeroCuenta: String
+    - saldo: Double
+    - tarjeta: TarjetaCredito
+    + recargar(monto: Double): void
+    + cobrar(monto: Double): Boolean
+}
+
+class TarjetaCredito {
+    - numeroTarjeta: String
+    - fechaVencimiento: Date
+    - saldoDisponible: Double
+    + validarSaldo(monto: Double): Boolean
+}
+
+class Producto {
+    - codigo: String
+    - nombre: String
+    - descripcion: String
+    - precioUnitario: Double
+    - stock: Int
+    + actualizarStock(cantidad: Int): void
+}
+
+abstract class Pedido {
+    - idPedido: String
+    - estado: String
+    + calcularTotal(): Double
+    + agregarPedido(pedido: Pedido): void
+    + eliminarPedido(pedido: Pedido): void
+}
+
+class PedidoSimple {
+    - cuenta: Cuenta
+    + agregarLinea(linea: LineaPedido): void
+}
+PedidoSimple -|> Pedido
+
+class PedidoCompuesto {
+    - subPedidos: List<Pedido>
+}
+PedidoCompuesto -|> Pedido
+
+class LineaPedido {
+    - producto: Producto
+    - cantidad: Int
+    - precioAplicado: Double
+}
+
+class ProcesadorCobros <<Singleton>> {
+    + procesarPedidos(pedidos: List<Pedido>): void
+}
+
+Cliente "1" -- "1..*" Cuenta : tiene >
+Cuenta "1" *-- "1" TarjetaCredito : posee >
+Cliente "1" -- "0..*" Pedido : realiza >
+PedidoSimple "1" -- "1" Cuenta : pagaCon >
+Pedido "1" -- "0..*" LineaPedido : contiene >
+LineaPedido "1" -- "1" Producto : refiere >
+PedidoCompuesto "1" *-- "0..*" Pedido : contiene >
+
+@enduml
+```
